@@ -6,7 +6,8 @@ import uart
 
 eng = engine.Engine()
 uart = uart.Uart(eng)
-srv = tcpclient.TCPClient(eng,'192.168.0.32',8081)
+uart.startUart()
+srv = tcpclient.TCPClient(eng,'192.168.0.28',8081)
 srv.startServer()
 
 while True:
@@ -17,7 +18,7 @@ while True:
             uart.sndMessage(item)
     
     to_tcp = eng.get_to_tcp_messages()
-    if len(to_uart)>0:
+    if len(to_tcp)>0:
         for item in to_uart:
             srv.sendData(item)
     time.sleep(0.1)
