@@ -7,7 +7,7 @@ class Uart():
     def __init__(self,eng):
 
         self.engine = eng
-        self.ser = serial.Serial('/dev/ttyAMA0', 9600, timeout = 1)
+        self.ser = serial.Serial('/dev/ttyS0', 9600)
         self.data_to_send = []
     
     def startUart(self):
@@ -17,11 +17,14 @@ class Uart():
     def rcvThread(self):
         while True: 
             line = self.ser.readline().decode()
-            if line != '':
-                print("UART RCV" + line)
+            self.ser.write(line.encode())
+            self.engine.snd_uart_to_tcp(line)
+            # if line != '':
+            print("UART RCV" + line)
     
     def sndMessage(self,msg):
         print("uart-----"+msg)
 
     def sendData(self,data):
+        self.ser.write(data.encode())
         self.data_to_send.append(data)

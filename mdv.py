@@ -15,11 +15,11 @@ while True:
     to_uart = eng.get_to_uart_messages()
     if len(to_uart)>0:
         for item in to_uart:
-            uart.sndMessage(item)
+            uart.sendData(item)
     
     to_tcp = eng.get_to_tcp_messages()
     if len(to_tcp)>0:
-        for item in to_uart:
+        for item in to_tcp:
             srv.sendData(item)
     time.sleep(0.1)
 

@@ -39,8 +39,8 @@ class TCPClient:
 
         thread3 = threading.Thread(target=TCPClient.threadSender,args=(self,conn,))
         thread3.start()
+        self.tcp_active= True
         while True:
-            self.tcp_active= True
             #Receiving from client
             data = conn.recv(1024)
             print(data)
@@ -61,8 +61,9 @@ class TCPClient:
         while self.tcp_active:
             time.sleep(0.1)
             if len(self.data_to_send) > 0:
-                msg=self.data_to_send[0]+'\n'
+                msg=self.data_to_send[0]
                 self.data_to_send.remove(self.data_to_send[0])
+                print("Sending over tcp")
                 conn.sendall(msg.encode())
 
     def sendData(self,data):

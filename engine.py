@@ -4,6 +4,7 @@ class Engine:
         self.tcp_buffer = []
 
     def snd_uart_to_tcp(self, msg):
+        print("APPENDING UART MESSAGE")
         self.uart_buffer.append(msg)
 
     def snd_tcp_to_uart(self, msg):
