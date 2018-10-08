@@ -2,7 +2,11 @@ import tcpclient
 import time
 import engine
 import uart
+import subprocess
 
+
+process = subprocess.Popen(['/usr/local/bin/mjpg_streamer', '-o', 'output_http.so', '-i', 'input_raspicam.so -fps 15'])
+#/usr/local/bin/mjpg_streamer -o output_http.so -i "input_raspicam.so -fps 15"
 
 eng = engine.Engine()
 uart = uart.Uart(eng)
