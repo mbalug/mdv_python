@@ -19,14 +19,22 @@ class TCPClient:
         self.socket.listen(10)
         print ('Socket now listening')
         self.tcp_active=False
+        self.stop_client_thread = False
+        self.wait_for_connection = True
         self.data_to_send = []
 
+        self.thread = threading.Thread(target=TCPClient.waitConnection,args=(self,))
+
     def startServer(self):
-        thread = threading.Thread(target=TCPClient.waitConnection,args=(self,))
-        thread.start()
+        self.thread.start()
+
+    def stopServer(self):
+        self.wait_for_connection = False
+        self.stop_client_thread = True
+        self.thread.join()
 
     def waitConnection(self):
-        while True:
+        while self.wait_for_connection:
             conn, addr = self.socket.accept()
             print ('Connected with ' + addr[0] + ':' + str(addr[1]))
 
@@ -34,13 +42,14 @@ class TCPClient:
             thread1.start()
         self.socket.close()
         thread1.join()
+        print("TCP THREAD WAITCONN DONE")
 
     def clientthread(self, conn):
 
         thread3 = threading.Thread(target=TCPClient.threadSender,args=(self,conn,))
         thread3.start()
         self.tcp_active= True
-        while True:
+        while not self.stop_client_thread:
             #Receiving from client
             data = conn.recv(1024)
             print(data)
@@ -52,8 +61,9 @@ class TCPClient:
             self.eng.snd_tcp_to_uart(data.decode())
             print("Sending:" + reply)
             conn.sendall(reply.encode())
-
+        thread3.join()
         conn.close()
+        print("TCP THREAD client DONE")
 
     def threadSender(self,conn):
         print("Thread is startd")
@@ -65,6 +75,7 @@ class TCPClient:
                 self.data_to_send.remove(self.data_to_send[0])
                 print("Sending over tcp")
                 conn.sendall(msg.encode())
+        print("TCP THREAD SENDER DONE")   
 
     def sendData(self,data):
         self.data_to_send.append(data)
