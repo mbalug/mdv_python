@@ -1,4 +1,5 @@
 #include <string>
+#include <tuple>
 namespace mdv
 {
 class TcpServer;
@@ -15,6 +16,7 @@ public:
   void sendMessageToTcp(std::string &msg);
 
 private:
+  std::tuple<int, int> parseSteeringControl(std::string &msg);
   std::string m_id;
   TcpServer *m_tcp_server;
   Uart *m_uart;
