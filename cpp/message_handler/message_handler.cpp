@@ -22,32 +22,28 @@ void MessageHandler::sendMessageToUart(std::string &msg)
         if (msg.find("FR") != std::string::npos)
         {
             auto result = parseSteeringControl(msg);
-            messages.push_back("FL" + std::to_string(std::get<0>(result)));
-            messages.push_back("FR" + std::to_string(std::get<1>(result)));
+            messages.push_back("FL" + std::to_string(std::get<0>(result)) + "FR" + std::to_string(std::get<1>(result)));
         }
         else if (msg.find("FL") != std::string::npos)
         {
             auto result = parseSteeringControl(msg);
-            messages.push_back("FR" + std::to_string(std::get<0>(result)));
-            messages.push_back("FL" + std::to_string(std::get<1>(result)));
+            messages.push_back("FL" + std::to_string(std::get<1>(result)) + "FR" + std::to_string(std::get<0>(result)));
         }
         else if (msg.find("RR") != std::string::npos)
         {
             auto result = parseSteeringControl(msg);
-            messages.push_back("RL" + std::to_string(std::get<0>(result)));
-            messages.push_back("RR" + std::to_string(std::get<1>(result)));
+            messages.push_back("RL" + std::to_string(std::get<0>(result)) + "RR" + std::to_string(std::get<1>(result)));
         }
         else if (msg.find("RL") != std::string::npos)
         {
             auto result = parseSteeringControl(msg);
-            messages.push_back("RR" + std::to_string(std::get<0>(result)));
-            messages.push_back("RL" + std::to_string(std::get<1>(result)));
+            messages.push_back("RL" + std::to_string(std::get<1>(result)) + "RR" + std::to_string(std::get<0>(result)));
         }
     }
     for (const auto &message : messages)
     {
         std::cout << message << std::endl;
-        m_uart->writeString(message);
+        m_uart->writeString(message + '\n');
     }
 }
 
@@ -81,7 +77,7 @@ std::tuple<int, int> MessageHandler::parseSteeringControl(std::string &msg)
         }
     }
 
-    constexpr double MAX_SPEED = 1024 / 100;
+    constexpr double MAX_SPEED = 4095 / 100;
     double speed = 0;
     double steering_speed = 0;
     if (strength)
